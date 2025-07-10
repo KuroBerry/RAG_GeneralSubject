@@ -5,3 +5,14 @@ google
 langchain
 langchain-community
 pypdf
+sentence_transformers
+re
+pdfminer.six
+fitz
+frontend
+protobuf
+gcloud
+google-api-python-client
+grpc
+rank_bm25
+python-dotenv
