@@ -27,19 +27,13 @@ PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 HOST_DENSE = os.getenv("HOST_DENSE")
 HOST_SPARSE = os.getenv("HOST_SPARSE")
 
-print(GEMINI_API_KEY)
-print(PINECONE_API_KEY)
-print(HOST_DENSE)
-print(HOST_SPARSE)
-
 pc = Pinecone(api_key = PINECONE_API_KEY)
 
 # Gọi Dense Database và Sparse Database
 dense_index = pc.Index(host = HOST_DENSE)
 sparse_index = pc.Index(host = HOST_SPARSE)
 
-# Gọi LLM (Gemini) để thực hiện chức năng phân loại
-
+# Gọi LLM (Gemini) để thực hiện chức năng phân loại môn dựa trên câu hỏi
 def subject_classification(input_querry):
     prompt = f"""
     Bạn là trợ lý phân loại câu hỏi học thuật. Hãy xác định câu hỏi sau thuộc môn nào.
@@ -69,6 +63,7 @@ def subject_classification(input_querry):
 #Gọi mô hình Embedding
 embedding_model = SentenceTransformer("AITeamVN/Vietnamese_Embedding")
 
+#Thự hiện Semantic Search
 def semantic_dense(input_querry, namespace, embedding_model = None):
     dense_results = dense_index.query(
         namespace= namespace, 
@@ -80,16 +75,17 @@ def semantic_dense(input_querry, namespace, embedding_model = None):
 
     return dense_results
 
+
 # Lấy raw chunk của các môn đại cương tạo vocabulary
 raw_chunk = load_chunks_from_json(r"../data/LichSuDang/Lich_Su_Dang_raw.json") + load_chunks_from_json(r"../data/TrietHoc/TrietHoc_raw.json")
 
 # Tạo corpus
 corpus_texts = [chunk["content"] for chunk in raw_chunk]
 tokenized_corpus = [bm25_tokenize(text) for text in corpus_texts]
-
 bm25 = BM25Okapi(tokenized_corpus)
 vocabulary = list(bm25.idf.keys())
 
+# Thực hiện Lexical Search
 def lexical_sparse(input_querry, namespace, bm25, vocabulary):
 
     sparse_vector = text_to_sparse_vector_bm25(input_querry, bm25, vocabulary)
@@ -103,6 +99,7 @@ def lexical_sparse(input_querry, namespace, bm25, vocabulary):
 
     return sparse_results
 
+# Merge các kết quả từ hai phương pháp tìm kiếm
 def merge_chunks(h1, h2):
     """Get the unique hits from two search results and return them as single array of {'_id', 'chunk_text'} dicts, printing each dict on a new line."""
     # Deduplicate by _id
@@ -114,7 +111,8 @@ def merge_chunks(h1, h2):
     result = [{'id': hit['id'], 'content': hit['metadata']['content']} for hit in sorted_hits]
     return result
 
-def hybrid_retriever(input_querry, embedding_model, bm25, vocabulary):
+# Hàm chính để thực hiện Hybrid Search
+def hybrid_retriever(input_querry):
     #Lấy namespace để truyền vào tìm kiếm vector
     namespace = subject_classification(input_querry)
 
@@ -125,13 +123,4 @@ def hybrid_retriever(input_querry, embedding_model, bm25, vocabulary):
     # Kết hợp kết quả từ hai phương pháp
     results = merge_chunks(dense_results, sparse_results)
 
-    # Lưu kết quả vào file JSON
-    save_chunks_to_json(results, "../context/hybrid_search_results.json")
-
     return results
-
-input_querry = "Quân Tưởng"
-results = hybrid_retriever(input_querry, embedding_model, bm25, vocabulary)
-
-print('[\n   ' + ',\n   '.join(str(obj) for obj in results) + '\n]')
-print(len (results))
