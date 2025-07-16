@@ -131,7 +131,7 @@ def setup_sidebar():
             num_retrieval_docs = st.slider(
                 "🔢 Số lượng văn bản truy xuất:",
                 min_value=1,  
-                max_value=10,  
+                max_value=20,  
                 value=5 
             )
   
@@ -167,7 +167,7 @@ def setup_chat_interface(model_choice):
             st.markdown(msg["content"])
     return msgs
 
-def user_input(msgs, model_choice, retrieval_choice):
+def user_input(msgs, model_choice, retrieval_choice, num_retrieval_docs):
     if input_query:= st.chat_input("Hãy hỏi tôi bất cứ điều gì về Triết học và Lịch Sử Đảng!"):
         st.session_state['messages'].append({"role": "user", "content": input_query})
         with st.chat_message("user"):
@@ -220,13 +220,15 @@ def user_input(msgs, model_choice, retrieval_choice):
                     st.caption("This is triet-hoc")
                     if retrieval_choice == "Parent documents retrieval":
                         st.caption("This is parent retrieval")
+                        st.caption(f"Docs retrieval: {num_retrieval_docs}")
                         response_placeholder.markdown("📚 Đang truy xuất tài liệu...")
                         context = parent_retrieval(input_query, namespace="triet-hoc-children", p_namespace="triet-hoc")
 
                     elif retrieval_choice == "Hybrid retrieval":
                         st.caption("This is hybrid retrieval")
+                        st.caption(f"Docs retrieval: {num_retrieval_docs}")
                         response_placeholder.markdown("🔎 Đang tìm kiếm hybrid...")
-                        context = hybrid_retriever(input_query, model_choice)
+                        context = hybrid_retriever(input_query, model_choice, num_retrieval_docs)
 
                     response_placeholder.markdown("✍️ Đang tạo câu trả lời...")
                     response = generate_answer(input_query=input_query, context=context, router=router, chat_history=chat_history, model_choice=model_choice)
@@ -236,13 +238,15 @@ def user_input(msgs, model_choice, retrieval_choice):
                     st.caption("This is lich-su-dang")
                     if retrieval_choice == "Parent documents retrieval":
                         st.caption("This is parent retrieval")
+                        st.caption(f"Docs retrieval: {num_retrieval_docs}")
                         response_placeholder.markdown("📚 Đang truy xuất tài liệu...")
                         context = parent_retrieval(input_query, namespace="lich-su-dang-children", p_namespace="lich-su-dang")
 
                     elif retrieval_choice == "Hybrid retrieval":
                         st.caption("This is hybrid retrieval")
+                        st.caption(f"Docs retrieval: {num_retrieval_docs}")
                         response_placeholder.markdown("🔎 Đang tìm kiếm hybrid...")
-                        context = hybrid_retriever(input_query, model_choice)
+                        context = hybrid_retriever(input_query, model_choice, num_retrieval_docs)
 
                     response_placeholder.markdown("✍️ Đang tạo câu trả lời...")
                     response = generate_answer(input_query=input_query, context=context, router=router, chat_history=chat_history, model_choice=model_choice)
@@ -295,7 +299,7 @@ def main():
     model_choice, retrieval_choice, num_retrieval_docs = setup_sidebar()
         
     msgs = setup_chat_interface(model_choice)
-    user_input(msgs, model_choice, retrieval_choice)
+    user_input(msgs, model_choice, retrieval_choice, num_retrieval_docs)
     
 if __name__ == "__main__":
     main()
