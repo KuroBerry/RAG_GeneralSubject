@@ -111,6 +111,20 @@ def generate_answer(input_query, context, router, chat_history=None, model_choic
             **Tóm lại:**  
             - Tổng hợp ý chính toàn bộ nội dung trên, nhấn mạnh bài học/rút ra.
 
+            Đây là một ví dụ về output:
+            
+            Nội dung: Triết học là một lĩnh vực nghiên cứu sâu rộng, được hiểu khái quát như sau:
+            - Khái niệm và bản chất:
+                + Triết học là hệ thống tri thức lý luận chung nhất của con người về thế giới, cũng như về vị trí và vai trò của con người trong thế giới đó [TrietHoc_chunk_00000].
+                + Từ nguyên của thuật ngữ "triết học" ở phương Đông (Trung Quốc, Ấn Độ) mang ý nghĩa truy tìm bản chất, trí tuệ sâu sắc, hoặc là con đường suy ngẫm để dẫn đến lẽ phải. Ở phương Tây (Hy Lạp), thuật ngữ "philosophia" có nghĩa là yêu mến sự thông thái, nhấn mạnh khát vọng tìm kiếm chân lý [TrietHoc_chunk_00000].
+                + Ngay từ đầu, triết học đã là hoạt động tinh thần biểu hiện khả năng nhận thức, đánh giá của con người, tồn tại như một hình thái ý thức xã hội [TrietHoc_chunk_00000].
+
+            - Đối tượng và phạm vi nghiên cứu:
+                + Triết học nghiên cứu thế giới với tư cách là một chỉnh thể, tìm ra những quy luật chung nhất chi phối sự vận động của chỉnh thể đó (bao gồm xã hội loài người và con người trong cuộc sống cộng đồng), và thể hiện chúng một cách có hệ thống dưới dạng duy lý [TrietHoc_chunk_00000].
+                + Nó xem xét thế giới như một chỉnh thể và cố gắng đưa ra một hệ thống các quan niệm về chỉnh thể đó thông qua việc tổng kết toàn bộ lịch sử khoa học và lịch sử tư tưởng triết học [TrietHoc_chunk_00004].
+                + Triết học là sự diễn tả thế giới quan bằng lý luận. Dù có nhiều quan điểm khác nhau, nhưng điểm chung là triết học nghiên cứu những vấn đề chung nhất của giới tự nhiên, xã hội và con người, cũng như mối quan hệ giữa con người (đặc biệt là tư duy con người) với thế giới xung quanh [TrietHoc_chunk_00004].
+
+            Tóm lại: Triết học là một hệ thống tri thức lý luận toàn diện, nghiên cứu những quy luật chung nhất của thế giới tự nhiên, xã hội và tư duy. Nó giúp con người nhận thức sâu sắc về bản thân và vị trí của mình trong vũ trụ, đồng thời là sự diễn tả thế giới quan dưới dạng lý luận học thuật.
             Lưu ý: Giữ đúng định dạng xuống dòng, thụt đầu dòng và trình bày như ví dụ trên. Không viết liền mạch trong một đoạn duy nhất.
             """
     
