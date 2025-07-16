@@ -45,53 +45,23 @@ def reset_conversation():
     st.rerun()
 
 def response_generator(response):
-    """Tạo typing effect bằng cách hiển thị từng dòng"""
-    lines = response.split('\n')
-    for i, line in enumerate(lines):
-        yield '\n'.join(lines[:i+1])
-        time.sleep(0.1)
-
-def typing_effect_by_lines(response_placeholder, response_text):
-    """Hiển thị response với typing effect theo từng dòng để giữ format"""
-    lines = response_text.split('\n')
-    displayed_content = ""
-    
-    for line in lines:
-        if displayed_content:
-            displayed_content += '\n' + line
-        else:
-            displayed_content = line
-        response_placeholder.markdown(displayed_content)
-        time.sleep(0.1)  # Delay ngắn giữa các dòng
-    
-    return displayed_content
+    for word in response.split():
+        yield word + " "
+        time.sleep(0.05)
 
 def clean_response(response):
     """
-    Làm sạch và format response để hiển thị đúng markdown
+    Làm sạch response để hiển thị tốt hơn
     """
     if not isinstance(response, str):
         response = str(response)
     
-    # Loại bỏ khoảng trắng thừa ở đầu và cuối
+    # Loại bỏ khoảng trắng thừa
     response = response.strip()
     
-    # Thay thế các escape characters
+    # Thay thế escape characters
     response = response.replace('\\n', '\n')
     response = response.replace('\\t', '\t')
-    
-    # Cải thiện format cho markdown
-    import re
-    
-    # Đảm bảo có khoảng trắng sau các bullet points
-    response = re.sub(r'\n\s*([a-z])\)', r'\n\t\1)', response)
-    response = re.sub(r'\n\s*([0-9]+)\.', r'\n\1.', response)
-    
-    # Đảm bảo có xuống dòng sau các heading
-    response = re.sub(r'\*\*([^*]+)\*\*\s*:', r'**\1:**\n', response)
-    
-    # Đảm bảo có xuống dòng đúng cách
-    response = re.sub(r'\n\s*\n', '\n\n', response)
     
     return response
     
@@ -267,11 +237,6 @@ def user_input(msgs, model_choice, retrieval_choice):
                 if isinstance(response, str):
                     # Làm sạch response trước khi hiển thị
                     clean_resp = clean_response(response)
-                    
-                    # Tùy chọn: có thể bật typing effect theo dòng hoặc hiển thị ngay
-                    # Để bật typing effect, uncomment dòng dưới và comment dòng response_placeholder.markdown
-                    # final_response = typing_effect_by_lines(response_placeholder, clean_resp)
-                    
                     # Hiển thị toàn bộ response ngay lập tức để giữ format
                     response_placeholder.markdown(clean_resp)
                     final_response = clean_resp

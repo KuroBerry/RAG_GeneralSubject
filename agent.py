@@ -43,35 +43,7 @@ def get_router(input_query, model_choice):
     return response.text
 
 def generate_answer(input_query, context, router, chat_history=None, model_choice=None):
-    if router == 'triet-hoc' or router == 'lich-su-dang':
-        # prompt = f"""
-        # Mày là một chuyên gia trong việc trả lời các môn học đại cương về chính trị bậc đại học không chính quy.
-        # Đây là lịch sử chat dùng để hỗ trợ các câu hỏi tiếp theo của người dùng:
-        # {chat_history}
-        
-        # Dưới đây chính là query của người dùng về các câu hỏi liên quan tới Triết học. 
-        # {input_query}
-        
-        # Còn dưới đây là những context được cung cấp đên mày để trả lời câu hỏi của người dùng.
-        # {context}
-        
-        # Yêu cầu khi trả lời:
-        # - Tóm tắt và tổng hợp thông tin từ các đoạn context có liên quan.
-        # - Hạn chế sao chép nguyên văn toàn bộ một đoạn nào từ context.
-        # - Văn phong rõ ràng, súc tích, mang tính học thuật.
-        # - Hãy ghi nguồn gốc của thông tin trong câu trả lời bằng id của đoạn văn bản trong context, đặt id ở cuối thông tin đó.
-        # - Dựa vào nhưng thông tin trên, mày hãy thực hiện trả lời câu hỏi của người dùng. Chỉ trả lời theo nội dung context cung cấp. Nếu những nội dung đó không liên quan đến câu hỏi thì trả lời "Context không liên quan".
-
-        # ## Câu trả lời cần được trình bày như sau:
-            # **Nội dung:**  
-        #     Chính sách nhân nhượng của quân ta với quân tưởng:\n
-        #     \ta) Giải thích rõ.\n
-        #     \tb) Áp dụng biện pháp ngăn chặn.\n 
-        #     \tc) Sử dụng vũ lực khi cần thiết.\n
-        #     Tóm lại: ...
-        # Câu trên chỉ là ví dụ. Nhưng hãy theo format đó để trình bày trả lời.       
-        # """
-        
+    if router == 'triet-hoc' or router == 'lich-su-dang': 
         prompt = f"""
             Mày là một chuyên gia trong việc trả lời các môn học đại cương về chính trị bậc đại học không chính quy.
             Đây là lịch sử chat dùng để hỗ trợ các câu hỏi tiếp theo của người dùng:
@@ -112,19 +84,33 @@ def generate_answer(input_query, context, router, chat_history=None, model_choic
             - Tổng hợp ý chính toàn bộ nội dung trên, nhấn mạnh bài học/rút ra.
 
             Đây là một ví dụ về output:
+            Ví dụ: 
+            Nội dung: Triết học là một lĩnh vực nghiên cứu sâu rộng, được hiểu khái quát như sau:\n
+            - Khái niệm và bản chất:\n
+                \t+ Triết học là hệ thống tri thức lý luận chung nhất của con người về thế giới, cũng như về vị trí và vai trò của con người trong thế giới đó [TrietHoc_chunk_00000].\n
+                \t+ Từ nguyên của thuật ngữ "triết học" ở phương Đông (Trung Quốc, Ấn Độ) mang ý nghĩa truy tìm bản chất, trí tuệ sâu sắc, hoặc là con đường suy ngẫm để dẫn đến lẽ phải. Ở phương Tây (Hy Lạp), thuật ngữ "philosophia" có nghĩa là yêu mến sự thông thái, nhấn mạnh khát vọng tìm kiếm chân lý [TrietHoc_chunk_00000].\n
+                \t+ Ngay từ đầu, triết học đã là hoạt động tinh thần biểu hiện khả năng nhận thức, đánh giá của con người, tồn tại như một hình thái ý thức xã hội [TrietHoc_chunk_00000].\n
+
+            - Đối tượng và phạm vi nghiên cứu:\n
+                \t+ Triết học nghiên cứu thế giới với tư cách là một chỉnh thể, tìm ra những quy luật chung nhất chi phối sự vận động của chỉnh thể đó (bao gồm xã hội loài người và con người trong cuộc sống cộng đồng), và thể hiện chúng một cách có hệ thống dưới dạng duy lý [TrietHoc_chunk_00000].\n
+                \t+ Nó xem xét thế giới như một chỉnh thể và cố gắng đưa ra một hệ thống các quan niệm về chỉnh thể đó thông qua việc tổng kết toàn bộ lịch sử khoa học và lịch sử tư tưởng triết học [TrietHoc_chunk_00004].
+                \t+ Triết học là sự diễn tả thế giới quan bằng lý luận. Dù có nhiều quan điểm khác nhau, nhưng điểm chung là triết học nghiên cứu những vấn đề chung nhất của giới tự nhiên, xã hội và con người, cũng như mối quan hệ giữa con người (đặc biệt là tư duy con người) với thế giới xung quanh [TrietHoc_chunk_00004].\n
+
+            Tóm lại: Triết học là một hệ thống tri thức lý luận toàn diện, nghiên cứu những quy luật chung nhất của thế giới tự nhiên, xã hội và tư duy. Nó giúp con người nhận thức sâu sắc về bản thân và vị trí của mình trong vũ trụ, đồng thời là sự diễn tả thế giới quan dưới dạng lý luận học thuật.\n
             
-            Nội dung: Triết học là một lĩnh vực nghiên cứu sâu rộng, được hiểu khái quát như sau:
-            - Khái niệm và bản chất:
-                + Triết học là hệ thống tri thức lý luận chung nhất của con người về thế giới, cũng như về vị trí và vai trò của con người trong thế giới đó [TrietHoc_chunk_00000].
-                + Từ nguyên của thuật ngữ "triết học" ở phương Đông (Trung Quốc, Ấn Độ) mang ý nghĩa truy tìm bản chất, trí tuệ sâu sắc, hoặc là con đường suy ngẫm để dẫn đến lẽ phải. Ở phương Tây (Hy Lạp), thuật ngữ "philosophia" có nghĩa là yêu mến sự thông thái, nhấn mạnh khát vọng tìm kiếm chân lý [TrietHoc_chunk_00000].
-                + Ngay từ đầu, triết học đã là hoạt động tinh thần biểu hiện khả năng nhận thức, đánh giá của con người, tồn tại như một hình thái ý thức xã hội [TrietHoc_chunk_00000].
+            Ví dụ 2:
+            Nội dung: Triết học là một lĩnh vực nghiên cứu sâu rộng, được hiểu khái quát như sau:\n
+            a. Khái niệm và bản chất:\n
+                \t- Triết học là hệ thống tri thức lý luận chung nhất của con người về thế giới, cũng như về vị trí và vai trò của con người trong thế giới đó [TrietHoc_chunk_00000].\n
+                \t- Từ nguyên của thuật ngữ "triết học" ở phương Đông (Trung Quốc, Ấn Độ) mang ý nghĩa truy tìm bản chất, trí tuệ sâu sắc, hoặc là con đường suy ngẫm để dẫn đến lẽ phải. Ở phương Tây (Hy Lạp), thuật ngữ "philosophia" có nghĩa là yêu mến sự thông thái, nhấn mạnh khát vọng tìm kiếm chân lý [TrietHoc_chunk_00000].\n
+                \t- Ngay từ đầu, triết học đã là hoạt động tinh thần biểu hiện khả năng nhận thức, đánh giá của con người, tồn tại như một hình thái ý thức xã hội [TrietHoc_chunk_00000].\n
 
-            - Đối tượng và phạm vi nghiên cứu:
-                + Triết học nghiên cứu thế giới với tư cách là một chỉnh thể, tìm ra những quy luật chung nhất chi phối sự vận động của chỉnh thể đó (bao gồm xã hội loài người và con người trong cuộc sống cộng đồng), và thể hiện chúng một cách có hệ thống dưới dạng duy lý [TrietHoc_chunk_00000].
-                + Nó xem xét thế giới như một chỉnh thể và cố gắng đưa ra một hệ thống các quan niệm về chỉnh thể đó thông qua việc tổng kết toàn bộ lịch sử khoa học và lịch sử tư tưởng triết học [TrietHoc_chunk_00004].
-                + Triết học là sự diễn tả thế giới quan bằng lý luận. Dù có nhiều quan điểm khác nhau, nhưng điểm chung là triết học nghiên cứu những vấn đề chung nhất của giới tự nhiên, xã hội và con người, cũng như mối quan hệ giữa con người (đặc biệt là tư duy con người) với thế giới xung quanh [TrietHoc_chunk_00004].
+            b. Đối tượng và phạm vi nghiên cứu:\n
+                \t- Triết học nghiên cứu thế giới với tư cách là một chỉnh thể, tìm ra những quy luật chung nhất chi phối sự vận động của chỉnh thể đó (bao gồm xã hội loài người và con người trong cuộc sống cộng đồng), và thể hiện chúng một cách có hệ thống dưới dạng duy lý [TrietHoc_chunk_00000].\n
+                \t- Nó xem xét thế giới như một chỉnh thể và cố gắng đưa ra một hệ thống các quan niệm về chỉnh thể đó thông qua việc tổng kết toàn bộ lịch sử khoa học và lịch sử tư tưởng triết học [TrietHoc_chunk_00004].\n
+                \t- Triết học là sự diễn tả thế giới quan bằng lý luận. Dù có nhiều quan điểm khác nhau, nhưng điểm chung là triết học nghiên cứu những vấn đề chung nhất của giới tự nhiên, xã hội và con người, cũng như mối quan hệ giữa con người (đặc biệt là tư duy con người) với thế giới xung quanh [TrietHoc_chunk_00004].\n
 
-            Tóm lại: Triết học là một hệ thống tri thức lý luận toàn diện, nghiên cứu những quy luật chung nhất của thế giới tự nhiên, xã hội và tư duy. Nó giúp con người nhận thức sâu sắc về bản thân và vị trí của mình trong vũ trụ, đồng thời là sự diễn tả thế giới quan dưới dạng lý luận học thuật.
+            Tóm lại: Triết học là một hệ thống tri thức lý luận toàn diện, nghiên cứu những quy luật chung nhất của thế giới tự nhiên, xã hội và tư duy. Nó giúp con người nhận thức sâu sắc về bản thân và vị trí của mình trong vũ trụ, đồng thời là sự diễn tả thế giới quan dưới dạng lý luận học thuật.\n
             Lưu ý: Giữ đúng định dạng xuống dòng, thụt đầu dòng và trình bày như ví dụ trên. Không viết liền mạch trong một đoạn duy nhất.
             """
     
@@ -151,24 +137,6 @@ def generate_answer(input_query, context, router, chat_history=None, model_choic
         - Người dùng: "Hôm nay trời đẹp quá"
         - Chatbot: "Thật tuyệt vời! Thời tiết đẹp luôn mang lại cảm giác thoải mái. Bạn có kế hoạch gì cho ngày hôm nay không?"
         """
-    # prompt = f"""
-    # Mày là một chuyên gia trong việc trả lời các môn học đại cương về chính trị bậc đại học không chính quy.
-    # Đây là lịch sử chat dùng để hỗ trợ các câu hỏi tiếp theo của người dùng:
-    # {chat_history}
-    
-    # Dưới đây chính là query của người dùng về các câu hỏi liên quan tới các môn chính trị. 
-    # {input_query}
-    
-    # Còn dưới đây là những context được cung cấp đên mày để trả lời câu hỏi của người dùng.
-    # {context}
-    
-    # Yêu cầu khi trả lời:
-    # - Tóm tắt và tổng hợp thông tin từ các đoạn context có liên quan.
-    # - Hạn chế sao chép nguyên văn toàn bộ một đoạn nào từ context.
-    # - Văn phong rõ ràng, súc tích, mang tính học thuật.
-    # - Hãy ghi nguồn gốc của thông tin trong câu trả lời bằng id của đoạn văn bản trong context, đặt id ở cuối thông tin đó.
-    # - Dựa vào nhưng thông tin trên, mày hãy thực hiện trả lời câu hỏi của người dùng. Chỉ trả lời theo nội dung context cung cấp. Nếu những nội dung đó không liên quan đến câu hỏi thì trả lời "Context không liên quan".
-    # """
     
     # client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
     client = cache_data.get_gemini_model()

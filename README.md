@@ -8,5 +8,5 @@
 ## Chạy app streamlit
 - Sau khi thêm các api key vào trong file .env thì chỉ cần chạy:
 ```
-strealit run rag_app.py
+strealit run streamlit_interface.py
 ```

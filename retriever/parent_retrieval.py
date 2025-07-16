@@ -101,3 +101,15 @@ def parent_document_search(query, namespace="None", p_namespace="None", top_k=10
     print(f"Ranked {len(ranked_parents)} parent chunks, trả về top {top_k}")
     
     return ranked_parents[:top_k]
+
+if __name__ == "__main__":
+    # Test function
+    query = "Lịch sử Đảng Cộng sản Việt Nam"
+    namespace = "lich-su-dang-children"
+    p_namespace = "lich-su-dang"
+    top_k = 5
+    alpha = 0.7
+    
+    results = parent_document_search(query, namespace, p_namespace, top_k, alpha)
+    for res in results:
+        print(f"Parent ID: {res['parent_id']}, Score: {res['score']}, Child Count: {res['child_count']}")
