@@ -23,7 +23,7 @@ def get_router(input_query, model_choice):
 
     **Câu hỏi cần phân loại:** "{input_query}"
 
-    **Chỉ trả lời bằng một trong bốn từ sau:**
+    **Chỉ trả lời bằng một trong năm từ sau:**
     * `triet-hoc`
     * `lich-su-dang`
     * `normal` (Nếu câu hỏi thuộc những câu hỏi chào hỏi, đoạn chat thể hiện cảm xúc hay còn gọi là normal chatting)
@@ -180,7 +180,7 @@ def generate_answer(input_query, context, router, chat_history=None, model_choic
     return response.text
 
 def main():
-    input_query = "ngu quá"
+    input_query = "ĐCSVN thành lập năm nào?"
     namespace = get_router(input_query, "gemini-2.5-flash")
     print(f"Câu hỏi: {input_query}")
     print(f"Namespace phân loại: {namespace}")

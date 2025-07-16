@@ -5,6 +5,7 @@ import streamlit as st
 from agent import get_router
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from retriever.parent_retrieval import parent_document_search as parent_retrieval
+from retriever.hybrid_search import hybrid_retriever
 from agent import generate_answer
 
 # Cache responses cho normal chatting
@@ -213,6 +214,7 @@ def user_input(msgs, model_choice, retrieval_choice):
                     {"role": msg["role"], "content": msg["content"]}
                     for msg in st.session_state.messages[:-1]
                 ]
+
                 if router == "triet-hoc":
                     response_placeholder.markdown("🔍 Đang tìm kiếm thông tin về Triết học...")
                     st.caption("This is triet-hoc")
@@ -224,7 +226,7 @@ def user_input(msgs, model_choice, retrieval_choice):
                     elif retrieval_choice == "Hybrid retrieval":
                         st.caption("This is hybrid retrieval")
                         response_placeholder.markdown("🔎 Đang tìm kiếm hybrid...")
-                        context = "No context"
+                        context = hybrid_retriever(input_query, model_choice)
 
                     response_placeholder.markdown("✍️ Đang tạo câu trả lời...")
                     response = generate_answer(input_query=input_query, context=context, router=router, chat_history=chat_history, model_choice=model_choice)
@@ -240,7 +242,7 @@ def user_input(msgs, model_choice, retrieval_choice):
                     elif retrieval_choice == "Hybrid retrieval":
                         st.caption("This is hybrid retrieval")
                         response_placeholder.markdown("🔎 Đang tìm kiếm hybrid...")
-                        context = "No context"
+                        context = hybrid_retriever(input_query, model_choice)
 
                     response_placeholder.markdown("✍️ Đang tạo câu trả lời...")
                     response = generate_answer(input_query=input_query, context=context, router=router, chat_history=chat_history, model_choice=model_choice)

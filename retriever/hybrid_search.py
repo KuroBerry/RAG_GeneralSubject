@@ -1,8 +1,7 @@
 #Tạo đương dẫn chung để đọc utils
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '..')))
-
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # Load các thư viện cần thiết
 import json
 from pinecone.grpc import PineconeGRPC as Pinecone
@@ -14,10 +13,10 @@ from google import genai
 
 # Đọc các file JSON
 #Tạo hàm đọc
-from utils.load_chunks_json import load_chunks_from_json
-from utils.save_chunks_json import save_chunks_to_json
-from utils.bm25 import bm25_tokenize, text_to_sparse_vector_bm25
-import cache_data
+from utils.bm25 import text_to_sparse_vector_bm25
+from agent import get_router
+import retriever.cache_data as cache_data       
+
 
 
 def semantic_dense(input_query, namespace, embedding_model = None):
@@ -31,15 +30,7 @@ def semantic_dense(input_query, namespace, embedding_model = None):
     )
     return dense_results
 
-# Lấy raw chunk của các môn đại cương tạo vocabulary
-raw_chunk = load_chunks_from_json(r"../data/LichSuDang/Lich_Su_Dang_raw.json") + load_chunks_from_json(r"../data/TrietHoc/TrietHoc_raw.json")
 
-# Tạo corpus
-corpus_texts = [chunk["content"] for chunk in raw_chunk]
-tokenized_corpus = [bm25_tokenize(text) for text in corpus_texts]
-
-bm25 = BM25Okapi(tokenized_corpus)
-vocabulary = list(bm25.idf.keys())
 
 def lexical_sparse(input_querry, namespace, bm25, vocabulary):
     sparse_index = cache_data.get_pinecone_index()[1]
@@ -65,9 +56,15 @@ def merge_chunks(h1, h2):
     result = [{'id': hit['id'], 'content': hit['metadata']['content']} for hit in sorted_hits]
     return result
 
-def hybrid_retriever(input_query, embedding_model, bm25, vocabulary):
+def hybrid_retriever(input_query, model_choice):
+
+    #Lấy ra các biến cần thiết
+    embedding_model = cache_data.get_embedding_model()
+    bm25 = cache_data.get_bm25()
+    vocabulary = cache_data.get_vocabulary(bm25)
+
     #Lấy namespace để truyền vào tìm kiếm vector
-    namespace = subject_classification(input_query)
+    namespace = get_router(input_query, model_choice)
 
     # Thực hiện tìm kiếm Semantic và Lexical
     dense_results = semantic_dense(input_query, namespace, embedding_model)
@@ -76,13 +73,11 @@ def hybrid_retriever(input_query, embedding_model, bm25, vocabulary):
     # Kết hợp kết quả từ hai phương pháp
     results = merge_chunks(dense_results, sparse_results)
 
-    # Lưu kết quả vào file JSON
-    save_chunks_to_json(results, "../context/hybrid_search_results.json")
-
     return results
 
-# input_querry = "Quân Tưởng"
-# results = hybrid_retriever(input_querry, embedding_model, bm25, vocabulary)
+#Gọi mô hình Embedding
+input_querry = "ĐCSVN thành lập năm nào?"
+results = hybrid_retriever(input_querry, 'gemini-2.5-flash')
 
-# print('[\n   ' + ',\n   '.join(str(obj) for obj in results) + '\n]')
-# print(len (results))
+print('[\n   ' + ',\n   '.join(str(obj) for obj in results) + '\n]')
+print(len (results))
