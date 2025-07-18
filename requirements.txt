@@ -16,3 +16,4 @@ python-dotenv
 streamlit
 google-generativeai
 google.genai
+dotenv

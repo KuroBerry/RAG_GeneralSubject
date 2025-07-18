@@ -62,7 +62,15 @@ def get_gemini_model():
 
 def get_bm25():
     # Lấy raw chunk của các môn đại cương tạo vocabulary
-    raw_chunk = load_chunks_from_json(r"./data/LichSuDang/Lich_Su_Dang_raw.json") + load_chunks_from_json(r"./data/TrietHoc/TrietHoc_raw.json")
+    # Xác định đường dẫn tuyệt đối tới các file JSON
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.abspath(os.path.join(current_dir, '..'))
+    lich_su_dang_path = os.path.join(root_dir, 'data', 'LichSuDang', 'Lich_Su_Dang_raw.json')
+    triet_hoc_path = os.path.join(root_dir, 'data', 'TrietHoc', 'TrietHoc_raw.json')
+
+    print(lich_su_dang_path, os.path.exists(lich_su_dang_path))
+    print(triet_hoc_path, os.path.exists(triet_hoc_path))
+    raw_chunk = load_chunks_from_json(lich_su_dang_path) + load_chunks_from_json(triet_hoc_path)
 
     # Tạo corpus
     corpus_texts = [chunk["content"] for chunk in raw_chunk]

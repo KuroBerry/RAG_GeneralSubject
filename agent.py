@@ -31,8 +31,6 @@ def get_router(input_query, model_choice):
     * `unknown` (Nếu không xác định được câu hỏi thuộc môn nào trong 3 phạm trù trên)
     """
     GEMINI_API_KEY = cache_data.get_gemini_key()
-    print(f"GEMINI_API_KEY: {GEMINI_API_KEY}")
-    print(f"Type: {type(GEMINI_API_KEY)}")
     # client = genai.Client(api_key=GEMINI_API_KEY)
     client = cache_data.get_gemini_model()
     response = client.models.generate_content(
