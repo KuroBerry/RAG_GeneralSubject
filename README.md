@@ -66,10 +66,12 @@ pip install -r requirements.txt
 
 ## Thêm API key
 - Tạo một file .env và thêm các API theo các biến sau: 
-    + GEMINI_API_KEY=""
-    + PINECONE_API_KEY=""
-    + HOST_DENSE=""
-    + HOST_SPARSE=""
+```
+GEMINI_API_KEY=""
+PINECONE_API_KEY=""
+HOST_DENSE=""
+HOST_SPARSE=""
+```
 
 ## Upsert dữ liệu có sẵn lên Pinecone của bạn
 Sau khi đã cài đặt xong file .env, hãy chạy file Jupyter Note sau để upsert data lên Pinecone Databse của bạn
