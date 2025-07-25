@@ -29,30 +29,30 @@ Hệ thống bao gồm 2 thành phần chính:
 # 📁 Cấu trúc dự án
 ```text
 RAG_GeneralSubject/
-├── data/ # Chứa các dữ liệu của nhóm môn Đại Cương
-│ ├── LichSuDang/ # Chứa dữ liệu của môn Lịch Sử Đảng
-│ ├── TrietHoc/ # Chứa dữ liệu của môn Triết Học
-│ ├── TuTuongHoChiMinh/ #Chứa dữ liệu của môn Tư Tưởng Hồ Chí Minh
-│ └── upsert.ipynb # File Ju notebook, được dùng để upsert các Data dạng Json lên Pinecone
+├── data/                         # Chứa các dữ liệu của nhóm môn Đại Cương
+│ ├── LichSuDang/                 # Chứa dữ liệu của môn Lịch Sử Đảng
+│ ├── TrietHoc/                   # Chứa dữ liệu của môn Triết Học
+│ ├── TuTuongHoChiMinh/           # Chứa dữ liệu của môn Tư Tưởng Hồ Chí Minh
+│ └── upsert.ipynb                # File Ju notebook, được dùng để upsert các Data dạng Json lên Pinecone
 │
-├── eval/ # Thư mục để eval mô hình
-│ ├── eval_data. # Dữ liệu đánh giá
-│ └── hybrid_evaluate.ipynb # Đánh giá mô hình với phương thứ Hybrid Search
+├── eval/                         # Thư mục để eval mô hình
+│ ├── eval_data.                  # Dữ liệu đánh giá
+│ └── hybrid_evaluate.ipynb       # Đánh giá mô hình với phương thứ Hybrid Search
 │
-├── retriever/ # Phần retriever của RAG
-│ ├── cache_data.py # Chạy các thành phần cần thiết của Model, dự án
-│ ├── hybrid_search.py # Thực hiện Hybrid Search
-│ └── parent_retrieval # Chạy Parenting Document Search
+├── retriever/                    # Phần retriever của RAG
+│ ├── cache_data.py               # Chạy các thành phần cần thiết của Model, dự án
+│ ├── hybrid_search.py            # Thực hiện Hybrid Search
+│ └── parent_retrieval            # Chạy Parenting Document Search
 │
-├── utils/ # Chạy các hàm cần thiết cho quá trình DEV
+├── utils/                        # Chạy các hàm cần thiết cho quá trình DEV
 │
-├── agent.py # Thực hiện phân loại câu hỏi và tạo câu trả lời
+├── agent.py                      # Thực hiện phân loại câu hỏi và tạo câu trả lời
 │
-├── requirements.txt # Các thư viện cần thiết để chạy dự án
+├── requirements.txt              # Các thư viện cần thiết để chạy dự án
 │
-├── streamlit_interface.py # File chính của dự án, chạy giao diện + gọi agent để thực hiện chức năng
+├── streamlit_interface.py        # File chính của dự án, chạy giao diện + gọi agent để thực hiện chức năng
 │
-└── README.md # File giới thiệu dự án
+└── README.md                     # File giới thiệu dự án
 ```
 
 # ⚙️ Cài đặt
