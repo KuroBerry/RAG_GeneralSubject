@@ -73,9 +73,9 @@ def hybrid_retriever(input_query, model_choice, top_k):
 
     return results
 
-#Gọi mô hình Embedding
-input_querry = "ĐCSVN thành lập năm nào?"
-results = hybrid_retriever(input_querry, 'gemini-2.5-flash', 10)
+# #Gọi mô hình Embedding
+# input_querry = "ĐCSVN thành lập năm nào?"
+# results = hybrid_retriever(input_querry, 'gemini-2.5-flash', 10)
 
-print('[\n   ' + ',\n   '.join(str(obj) for obj in results) + '\n]')
-print(len (results))
+# print('[\n   ' + ',\n   '.join(str(obj) for obj in results) + '\n]')
+# print(len (results))

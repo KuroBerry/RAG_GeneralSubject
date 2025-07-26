@@ -16,6 +16,7 @@ from google import genai
 from utils.load_chunks_json import load_chunks_from_json
 from utils.bm25 import bm25_tokenize
 
+
 # Tự động tìm file .env từ thư mục gốc project
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, '..'))
@@ -60,6 +61,7 @@ def get_gemini_model():
     client = genai.Client(api_key=GEMINI_API_KEY)
     return client
 
+@st.cache_resource
 def get_bm25():
     # Lấy raw chunk của các môn đại cương tạo vocabulary
     raw_chunk = load_chunks_from_json(r"./data/LichSuDang/Lich_Su_Dang_raw.json") + load_chunks_from_json(r"./data/TrietHoc/TrietHoc_raw.json")

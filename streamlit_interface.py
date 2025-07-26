@@ -8,6 +8,7 @@ from retriever.parent_retrieval import parent_document_search as parent_retrieva
 from retriever.hybrid_search import hybrid_retriever
 from agent import generate_answer
 
+
 # Cache responses cho normal chatting
 NORMAL_RESPONSES = [
     "Xin chào! Tôi là trợ lý AI của bạn. Tôi có thể giúp bạn trả lời các câu hỏi về Triết học Mác-Lênin và Lịch sử Đảng. Bạn có câu hỏi gì không?",
@@ -222,7 +223,7 @@ def user_input(msgs, model_choice, retrieval_choice, num_retrieval_docs):
                         st.caption("This is parent retrieval")
                         st.caption(f"Docs retrieval: {num_retrieval_docs}")
                         response_placeholder.markdown("📚 Đang truy xuất tài liệu...")
-                        context = parent_retrieval(input_query, namespace="triet-hoc-children", p_namespace="triet-hoc")
+                        context = parent_retrieval(input_query, namespace="triet-hoc-children", p_namespace="triet-hoc", num_retrieval_docs=num_retrieval_docs)
 
                     elif retrieval_choice == "Hybrid retrieval":
                         st.caption("This is hybrid retrieval")
@@ -240,7 +241,7 @@ def user_input(msgs, model_choice, retrieval_choice, num_retrieval_docs):
                         st.caption("This is parent retrieval")
                         st.caption(f"Docs retrieval: {num_retrieval_docs}")
                         response_placeholder.markdown("📚 Đang truy xuất tài liệu...")
-                        context = parent_retrieval(input_query, namespace="lich-su-dang-children", p_namespace="lich-su-dang")
+                        context = parent_retrieval(input_query, namespace="lich-su-dang-children", p_namespace="lich-su-dang", num_retrieval_docs=num_retrieval_docs)
 
                     elif retrieval_choice == "Hybrid retrieval":
                         st.caption("This is hybrid retrieval")
@@ -256,9 +257,9 @@ def user_input(msgs, model_choice, retrieval_choice, num_retrieval_docs):
                     response_placeholder.markdown("💬 Đang chuẩn bị trả lời...")
                     st.caption("This is normal")
                     # Trả lời nhanh cho normal chatting không cần gọi AI
-                    response = random.choice(NORMAL_RESPONSES)
+                    # response = random.choice(NORMAL_RESPONSES)
                     # Không cần gọi generate_answer cho normal chatting
-                    # response = generate_answer(input_query=input_query, context=None, router=router, chat_history=chat_history, model_choice=model_choice)
+                    response = generate_answer(input_query=input_query, context=None, router=router, chat_history=chat_history, model_choice=model_choice)
                 
                 elif router == "unknown":
                     response_placeholder.markdown("❓ Đang xử lý câu hỏi...")

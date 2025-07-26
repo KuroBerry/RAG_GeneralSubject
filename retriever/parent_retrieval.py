@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import retriever.cache_data as cache_data       
 
-def parent_document_search(query, namespace="None", p_namespace="None", top_k=10, alpha=0.7):
+def parent_document_search(query, namespace="None", p_namespace="None", num_retrieval_docs=5, top_k=10, alpha=0.7):
     """
     Thực hiện Parent Document Retrieval
     
@@ -29,7 +29,7 @@ def parent_document_search(query, namespace="None", p_namespace="None", top_k=10
     # Lấy nhiều child chunks để có đủ parent chunks đa dạng
     child_results = dense_index.query(
         vector=query_vector,
-        top_k=top_k * 2,  # Lấy gấp 3 lần để đảm bảo có đủ parent unique
+        top_k=top_k * 3,  # Lấy gấp 3 lần để đảm bảo có đủ parent unique
         include_metadata=True,
         namespace=namespace
     )
@@ -94,9 +94,9 @@ def parent_document_search(query, namespace="None", p_namespace="None", top_k=10
     # Bước 5: Sắp xếp theo score giảm dần và trả về top_k
     ranked_parents.sort(key=lambda x: x['score'], reverse=True)
     
-    print(f"Ranked {len(ranked_parents)} parent chunks, trả về top {top_k}")
+    # print(f"Ranked {len(ranked_parents)} parent chunks, trả về top {top_k}")
     
-    return ranked_parents[:top_k]
+    return ranked_parents[:num_retrieval_docs]
 
 if __name__ == "__main__":
     # Ví dụ sử dụng
@@ -109,3 +109,4 @@ if __name__ == "__main__":
     for result in results:
         print(f"Parent ID: {result['parent_id']}, Score: {result['score']}, Child Count: {result['child_count']}")
         print(f"Parent Chunk: {result['parent_chunk']}\n")
+        
