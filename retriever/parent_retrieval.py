@@ -74,10 +74,6 @@ def parent_document_search(query, namespace="None", p_namespace="None", top_k=10
         final_score = alpha * avg_score + (1 - alpha) * normalized_child_count
         
         # Lấy parent chunk từ lookup table
-        parent_chunk = dense_index.fetch(
-            ids=[parent_id],
-            namespace=f"{p_namespace}"
-        )
         
         parent_chunk = dense_index.fetch(
             ids=[f"{parent_id}"],
@@ -101,3 +97,15 @@ def parent_document_search(query, namespace="None", p_namespace="None", top_k=10
     print(f"Ranked {len(ranked_parents)} parent chunks, trả về top {top_k}")
     
     return ranked_parents[:top_k]
+
+if __name__ == "__main__":
+    # Ví dụ sử dụng
+    query = "ĐCSVN thành lập năm nào?"
+    namespace = "lich-su-dang-children"
+    p_namespace = "lich-su-dang"
+    
+    results = parent_document_search(query, namespace, p_namespace, top_k=5, alpha=0.7)
+    
+    for result in results:
+        print(f"Parent ID: {result['parent_id']}, Score: {result['score']}, Child Count: {result['child_count']}")
+        print(f"Parent Chunk: {result['parent_chunk']}\n")

@@ -5,6 +5,7 @@ import streamlit as st
 from agent import get_router
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from retriever.parent_retrieval import parent_document_search as parent_retrieval
+from retriever.hybrid_search import hybrid_retriever
 from agent import generate_answer
 
 # Cache responses cho normal chatting
@@ -45,9 +46,55 @@ def reset_conversation():
     st.rerun()
 
 def response_generator(response):
-    for word in response.split():
-        yield word + " "
-        time.sleep(0.05)
+    """Tạo typing effect bằng cách hiển thị từng dòng"""
+    lines = response.split('\n')
+    for i, line in enumerate(lines):
+        yield '\n'.join(lines[:i+1])
+        time.sleep(0.1)
+
+def typing_effect_by_lines(response_placeholder, response_text):
+    """Hiển thị response với typing effect theo từng dòng để giữ format"""
+    lines = response_text.split('\n')
+    displayed_content = ""
+    
+    for line in lines:
+        if displayed_content:
+            displayed_content += '\n' + line
+        else:
+            displayed_content = line
+        response_placeholder.markdown(displayed_content)
+        time.sleep(0.1)  # Delay ngắn giữa các dòng
+    
+    return displayed_content
+
+def clean_response(response):
+    """
+    Làm sạch và format response để hiển thị đúng markdown
+    """
+    if not isinstance(response, str):
+        response = str(response)
+    
+    # Loại bỏ khoảng trắng thừa ở đầu và cuối
+    response = response.strip()
+    
+    # Thay thế các escape characters
+    response = response.replace('\\n', '\n')
+    response = response.replace('\\t', '\t')
+    
+    # Cải thiện format cho markdown
+    import re
+    
+    # Đảm bảo có khoảng trắng sau các bullet points
+    response = re.sub(r'\n\s*([a-z])\)', r'\n\t\1)', response)
+    response = re.sub(r'\n\s*([0-9]+)\.', r'\n\1.', response)
+    
+    # Đảm bảo có xuống dòng sau các heading
+    response = re.sub(r'\*\*([^*]+)\*\*\s*:', r'**\1:**\n', response)
+    
+    # Đảm bảo có xuống dòng đúng cách
+    response = re.sub(r'\n\s*\n', '\n\n', response)
+    
+    return response
     
 def setup_page():
     """
@@ -84,7 +131,7 @@ def setup_sidebar():
             num_retrieval_docs = st.slider(
                 "🔢 Số lượng văn bản truy xuất:",
                 min_value=1,  
-                max_value=10,  
+                max_value=20,  
                 value=5 
             )
   
@@ -120,7 +167,7 @@ def setup_chat_interface(model_choice):
             st.markdown(msg["content"])
     return msgs
 
-def user_input(msgs, model_choice, retrieval_choice):
+def user_input(msgs, model_choice, retrieval_choice, num_retrieval_docs):
     if input_query:= st.chat_input("Hãy hỏi tôi bất cứ điều gì về Triết học và Lịch Sử Đảng!"):
         st.session_state['messages'].append({"role": "user", "content": input_query})
         with st.chat_message("user"):
@@ -167,18 +214,21 @@ def user_input(msgs, model_choice, retrieval_choice):
                     {"role": msg["role"], "content": msg["content"]}
                     for msg in st.session_state.messages[:-1]
                 ]
+
                 if router == "triet-hoc":
                     response_placeholder.markdown("🔍 Đang tìm kiếm thông tin về Triết học...")
                     st.caption("This is triet-hoc")
                     if retrieval_choice == "Parent documents retrieval":
                         st.caption("This is parent retrieval")
+                        st.caption(f"Docs retrieval: {num_retrieval_docs}")
                         response_placeholder.markdown("📚 Đang truy xuất tài liệu...")
                         context = parent_retrieval(input_query, namespace="triet-hoc-children", p_namespace="triet-hoc")
 
                     elif retrieval_choice == "Hybrid retrieval":
                         st.caption("This is hybrid retrieval")
+                        st.caption(f"Docs retrieval: {num_retrieval_docs}")
                         response_placeholder.markdown("🔎 Đang tìm kiếm hybrid...")
-                        context = "No context"
+                        context = hybrid_retriever(input_query, model_choice, num_retrieval_docs)
 
                     response_placeholder.markdown("✍️ Đang tạo câu trả lời...")
                     response = generate_answer(input_query=input_query, context=context, router=router, chat_history=chat_history, model_choice=model_choice)
@@ -188,13 +238,15 @@ def user_input(msgs, model_choice, retrieval_choice):
                     st.caption("This is lich-su-dang")
                     if retrieval_choice == "Parent documents retrieval":
                         st.caption("This is parent retrieval")
+                        st.caption(f"Docs retrieval: {num_retrieval_docs}")
                         response_placeholder.markdown("📚 Đang truy xuất tài liệu...")
                         context = parent_retrieval(input_query, namespace="lich-su-dang-children", p_namespace="lich-su-dang")
 
                     elif retrieval_choice == "Hybrid retrieval":
                         st.caption("This is hybrid retrieval")
+                        st.caption(f"Docs retrieval: {num_retrieval_docs}")
                         response_placeholder.markdown("🔎 Đang tìm kiếm hybrid...")
-                        context = "No context"
+                        context = hybrid_retriever(input_query, model_choice, num_retrieval_docs)
 
                     response_placeholder.markdown("✍️ Đang tạo câu trả lời...")
                     response = generate_answer(input_query=input_query, context=context, router=router, chat_history=chat_history, model_choice=model_choice)
@@ -217,26 +269,24 @@ def user_input(msgs, model_choice, retrieval_choice):
                     response_placeholder.markdown("⚠️ Đang xử lý câu hỏi...")
                     response = random.choice(UNLOGIC_RESPONSES)  
                 
-                # Hiển thị response với typing effect
-                response_content = ""
+                # Hiển thị response ngay lập tức với format đúng
                 if isinstance(response, str):
-                    # Cho normal, unknown, unlogic - response là string
-                    # Thêm delay ngắn để tạo cảm giác tự nhiên
-                    time.sleep(0.3)  # Delay ngắn cho normal responses
-                    for word in response.split():
-                        response_content += word + " "
-                        response_placeholder.markdown(response_content)
-                        time.sleep(0.05)  # Typing effect nhanh hơn
+                    # Làm sạch response trước khi hiển thị
+                    clean_resp = clean_response(response)
+                    
+                    # Tùy chọn: có thể bật typing effect theo dòng hoặc hiển thị ngay
+                    # Để bật typing effect, uncomment dòng dưới và comment dòng response_placeholder.markdown
+                    # final_response = typing_effect_by_lines(response_placeholder, clean_resp)
+                    
+                    # Hiển thị toàn bộ response ngay lập tức để giữ format
+                    response_placeholder.markdown(clean_resp)
+                    final_response = clean_resp
                 else:
-                    # Cho triet-hoc, lich-su-dang - response là generator
-                    for chunk in response:
-                        for char in chunk:
-                            response_content += char
-                            response_placeholder.markdown(response_content)
-                            time.sleep(0.01)  # Typing effect cho AI response
+                    # Fallback nếu response không phải string
+                    final_response = clean_response(str(response))
+                    response_placeholder.markdown(final_response)
                 
                 # Lưu response vào session state và chat history
-                final_response = response_content.strip() if isinstance(response, str) else response_content
                 st.session_state['messages'].append({"role": "assistant", "content": final_response})
                 msgs.add_ai_message(final_response)
                 
@@ -249,7 +299,7 @@ def main():
     model_choice, retrieval_choice, num_retrieval_docs = setup_sidebar()
         
     msgs = setup_chat_interface(model_choice)
-    user_input(msgs, model_choice, retrieval_choice)
+    user_input(msgs, model_choice, retrieval_choice, num_retrieval_docs)
     
 if __name__ == "__main__":
     main()
