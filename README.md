@@ -1,4 +1,4 @@
-# ***RAG General Subject***
+# ***INTELLIGENT CHATBOT FOR FOUNDATIONAL POLITICAL AND PHILOSOPHICAL EDUCATION***
 Chatbot **Retrieval-Augmented Generation (RAG)** được thiết kế để trả lời các câu hỏi học thuật liên quan đến các môn đại cương – hiện tại hỗ trợ:
 - **Lịch Sử Đảng** (hệ không chuyên)
 - **Triết Học Mác – Lênin** (hệ không chuyên)
