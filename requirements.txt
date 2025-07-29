@@ -17,3 +17,4 @@ streamlit
 google-generativeai
 google.genai
 dotenv
+matplotlib
