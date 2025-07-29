@@ -83,3 +83,21 @@ Sau khi đã cài đặt xong file .env, hãy chạy file Jupyter Note sau để
 ```
 streamlit run 'path to streamlit_interface.py'
 ```
+
+# Kết quả đánh giá mô hình (Model Evaluate - Hybrid Search)
+## **Tổng quan**
+Đánh giá mô hình RAG sử dụng chiến lược Hybrid Search, tập trung vào ba chỉ số chất lượng chính:
+
+- Correctness (Độ chính xác)
+
+- Faithfulness (Tính trung thực)
+
+- Relevance (Mức độ liên quan)
+
+## **Kết quả chi tiết**
+
+### 🔹 Biểu đồ phân phối điểm số (Histogram)
+<img src="./eval/eval_result/hybrid_eval_individual.png" alt="Histogram Scores" width="800"/>
+
+### 🔹 Biểu đồ tổng hợp điểm tổng thể
+<img src="./eval/eval_result/hybrid_eval_overall.png" alt="Overall Scores" width="800"/>
