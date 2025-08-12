@@ -3,6 +3,9 @@ Chatbot **Retrieval-Augmented Generation (RAG)** được thiết kế để tr�
 - **Lịch Sử Đảng** (hệ không chuyên)
 - **Triết Học Mác – Lênin** (hệ không chuyên)
 
+## ***Demo chatbot***
+https://github.com/user-attachments/assets/07d65fce-f305-4b74-9760-6940d0b6f0d1
+
 Hệ thống bao gồm 2 thành phần chính:
 
 - **Retrieval**: sử dụng 2 phương pháp:
